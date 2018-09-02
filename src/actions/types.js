@@ -1,0 +1,11 @@
+export const GET_TODOS_SUCCESS = 'GET_TODOS_SUCCESS';
+export const GET_TODOS_LOADING = 'GET_TODOS_LOADING';
+export const GET_TODOS_ERROR = 'GET_TODOS_ERROR';
+export const SET_TODO = 'SET_TODO';
+export const GET_TODO = 'GET_TODO';
+export const GET_TODO_COPY = 'GET_TODO_COPY';
+export const SAVE_TODO_ERROR = 'SAVE_TODO_ERROR';
+export const SAVE_TODO_LOADING = 'SAVE_TODO_LOADING';
+export const FLAG_SAVE = 'FLAG_SAVE';
+export const DELETE_ERROR = 'DELETE_ERROR';
+export const DELETE_TODO_LIST = 'DELETE_TODO_LIST';
