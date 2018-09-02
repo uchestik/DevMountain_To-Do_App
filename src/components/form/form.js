@@ -123,7 +123,7 @@ const Form = (props) => {
                 <Button
                     className={classes.button}
                     variant='contained'
-                    onClick={() => (id ||typeof (id) === 'number') ? resetForm(todoCopy, setTodo, flagError) : routingHandler(history, getTodo)}
+                    onClick={() => (id ||typeof (id) === 'number') ? resetForm(todoCopy, setTodo, flagError) : routingHandler(history, getTodo, flagError)}
                 >
                     Cancel
                 </Button>
