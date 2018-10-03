@@ -9,48 +9,68 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Icon from '@material-ui/core/Icon';
-import {getTodo,deleteTodo,deleteTodoList} from '../../actions/index';
+import {deleteTodo, removeDeleteFlag, saveTodo} from '../../actions/index';
 import styles from '../../utils/styles/todoListStyles';
 import PropTypes from 'prop-types';
 
 
-const handleTodoClick = (todo, getTodo, history, deleteTodoList, deleteError) => {
-    getTodo(todo, deleteError);
-    deleteTodoList();
-    history.push('/form');
+const handleTodoClick = (history, deleteError, id) => {
+    if(deleteError){
+        this.props.removeDeleteFlag();
+    }
+    history.push(`/form/task/${id}`);
 }
 
-const renderList = (todoList, classes, getTodo, history, deleteTodo, deleteTodoList, deleteError) => {
+const handleDelete = (id, deleteTodo) => {
+    deleteTodo(id);
+}
+
+const handleCompleteUpdate = (todo, saveTodo) => {
+    let method = todo.completed ? 'PATCH' : 'PUT';
+    saveTodo({...todo, completed : !todo.completed}, todo.id, method);
+}
+
+const renderList = (todoList, classes, history, deleteTodo, deleteError, saveTodo) => {
     return todoList.map((todo, index) => {
         return (
             <Card className={classes.card} key={index}>
                 <CardContent className={classes.cardContentWrapper}>
                         <div 
                             style={styles.flex}
-                            onClick={() => handleTodoClick(todo, getTodo, history, deleteTodoList, deleteError)}
+                            onClick={() => handleTodoClick(history, deleteError, todo.id)}
                         >
                             <Typography>
                                 <span 
                                     style={{
-                                        textDecoration : todo.completed ? 'line-through' : 'none'
+                                        textDecoration : todo.completed ? 'line-through' : 'none',
+                                        display : 'block'
                                     }}
                                 >
                                     {todo.title}
                                 </span>
-                            </Typography>
-                            <Button
-                                    variant='contained'
+                                <span
+                                    style={{
+                                        textDecoration : todo.completed ? 'line-through' : 'none',
+                                        display : 'block'
+                                    }}
                                 >
-                                    {
-                                        todo.completed ?
-                                        'Completed'
-                                        :
-                                        'Complete'
-                                    }
-                            </Button>
+                                    {todo.description}
+                                </span>
+                            </Typography>
                         </div>
+                        <Button
+                            onClick={() => handleCompleteUpdate(todo, saveTodo)}
+                            variant='contained'
+                            >
+                                {
+                                    todo.completed ?
+                                    'Completed'
+                                    :
+                                    'Complete'
+                                }
+                        </Button>
                         <CardActions className={classes.cardButtons}>
-                            <Icon onClick={() => deleteTodo(todo.id)}>
+                            <Icon onClick={() => handleDelete(todo.id, deleteTodo)}>
                                 close
                             </Icon>
                         </CardActions>
@@ -62,21 +82,14 @@ const renderList = (todoList, classes, getTodo, history, deleteTodo, deleteTodoL
 
 const TodoList = (props) => {
     const {
-        todoList, todosError, 
-        todosLoading, classes, getTodo, 
+        todoList, todosError, classes, 
         history, deleteError, deleteTodo,
-        deleteTodoList, saveError
+        saveError, saveTodo
     } = props;
     return (
         <React.Fragment>
             {
-                todosLoading && 
-                <div style={styles.position}>
-                    Loading ....
-                </div>
-            }
-            {
-                !todosLoading && todosError && 
+                todosError && 
                 <div 
                     className='alert alert-danger'
                     style={styles.position}
@@ -86,7 +99,7 @@ const TodoList = (props) => {
                 </div>
             }
             {
-                !todosLoading && todoList &&
+                todoList && !todosError &&
                 <div style={styles.position}>
                     {
                         deleteError && 
@@ -100,7 +113,7 @@ const TodoList = (props) => {
                             Error occured. Task was not saved.
                         </div>
                     }
-                    {renderList(todoList, classes, getTodo, history, deleteTodo, deleteTodoList, deleteError)}
+                    {renderList(todoList, classes, history, deleteTodo, deleteError, saveTodo)}
                 </div>
             }
         </React.Fragment>
@@ -118,7 +131,7 @@ function mapStateToProps(state){
 }
 
 function mapDispatchToProps(dispatch){
-    return bindActionCreators({getTodo,deleteTodo,deleteTodoList}, dispatch)
+    return bindActionCreators({deleteTodo, removeDeleteFlag, saveTodo}, dispatch)
 }
 
 TodoList.propTypes = {
@@ -127,9 +140,7 @@ TodoList.propTypes = {
     todosError : PropTypes.bool,
     deleteError : PropTypes.bool,
     saveError : PropTypes.bool,
-    getTodo : PropTypes.func,
     deleteTodo : PropTypes.func,
-    deleteTodoList : PropTypes.func,
     history : PropTypes.object
 }
 

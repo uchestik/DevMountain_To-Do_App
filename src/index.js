@@ -4,24 +4,23 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware  from 'redux-saga';
 import PromiseMiddleware from 'redux-promise';
-import reduxThunk from 'redux-thunk';
 
 //components
 import App from './App';
 
 //import reducer
 import reducer from './reducers'
-import { watcherSaga } from './saga/saga';
+import { rootSaga } from './saga/saga';
 
 const sagaMiddleware = createSagaMiddleware();
 
 const store = createStore(
     reducer,
     {},
-    applyMiddleware(sagaMiddleware, reduxThunk, PromiseMiddleware)
+    applyMiddleware(sagaMiddleware, PromiseMiddleware)
 )
 
-sagaMiddleware.run(watcherSaga)
+sagaMiddleware.run(rootSaga)
 
 ReactDOM.render(
     <Provider store={store}>

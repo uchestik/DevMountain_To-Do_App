@@ -1,8 +1,14 @@
-import {takeLatest} from 'redux-saga/effects';
-import {GET_TODOS_LOADING, SAVE_TODO_LOADING} from '../actions/types';
-import {getAllTodos, saveTodo} from '../actions/index';
+import {all} from 'redux-saga/effects';
+import {getTodosWatcher} from './getTodoSaga';
+import {saveTodoWatcher} from './saveTodoSaga';
+import {deleteTodoTaskWatcher} from './deleteTodoSaga';
 
-export function* watcherSaga() {
-    yield takeLatest(GET_TODOS_LOADING, getAllTodos);
-    yield takeLatest(SAVE_TODO_LOADING, saveTodo);
+export function* rootSaga() {
+    yield all(
+        [
+            getTodosWatcher(),
+            deleteTodoTaskWatcher(),
+            saveTodoWatcher()
+        ]
+    )
 }

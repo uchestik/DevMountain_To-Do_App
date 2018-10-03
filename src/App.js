@@ -7,6 +7,7 @@ const App = () => {
     return (
         <BrowserRouter>
             <div>
+                <Route exact path='/form/task/:id' component={Form} />
                 <Route exact path='/form' component={Form} />
                 <Route exact path='/' component={Todo} />
             </div>
